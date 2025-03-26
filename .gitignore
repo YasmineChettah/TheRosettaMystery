@@ -87,6 +87,22 @@ Assets/AssetPacks/ALP_Assets/Realistic Terrain Textures Lite/Scenes/TerrainDATA/
 Assets/AssetPacks/ALP_Assets/Realistic Terrain Textures Lite/Textures/Ground001.tif
 Assets/AssetPacks/ALP_Assets/Realistic Terrain Textures Lite/Textures/Ground001_N.png
 
+
+# Ignorer les textures lourdes
+Assets/AssetPacks/ALP_Assets/Realistic Terrain Textures Lite/Textures/*.tif
+Assets/AssetPacks/ALP_Assets/Realistic Terrain Textures Lite/Textures/*.png
+Assets/AssetPacks/ALP_Assets/Realistic Terrain Textures Lite/Scenes/TerrainDATA/
+
+# Ignorer les fichiers de cache et temporaires Unity
+Library/
+Temp/
+Logs/
+UserSettings/
+
+# Ignorer les fichiers externes non nécessaires
+Assets/RunemarkStudio/
+
+
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 

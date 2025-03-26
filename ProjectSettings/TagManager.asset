@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Lettre
   - MissionItem
+  - SecondMission
+  - MissionItem2
   layers:
   - Default
   - TransparentFX

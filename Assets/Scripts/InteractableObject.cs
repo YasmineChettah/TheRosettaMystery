@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Data;
 using Mono.Data.Sqlite;
-using UnityEngine.SceneManagement; 
+using UnityEngine.SceneManagement;
 
 public class InteractableObject : MonoBehaviour
 {
@@ -40,21 +40,30 @@ public class InteractableObject : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0) && playerInRange)
         {
-            if (CompareTag("MissionItem"))
+            string currentTag = gameObject.tag; // Récupérer le tag de l'objet
+            AddItemToDatabase(); // Ajouter dans la base de données avec le tag
+
+            int countMission1 = CheckItemCount("MissionItem"); // Nombre d'objets de mission 1
+            int countMission2 = CheckItemCount("SecondMission"); // Nombre d'objets de mission 2
+
+            if (countMission1 >= 6)
             {
-                AddItemToDatabase();
-                if (CheckItemCount() >= 6)
-                {
-                    // Si le joueur a plus de 6 items, on change de scène
-                    SceneManager.LoadScene("SecondCutScene");
-                    DeleteItemsFromDatabase();
-                    return;
-                }
-        
-                Destroy(gameObject); // Détruire l'objet après avoir ajouté à la base de données
+                SceneManager.LoadScene("SecondMissionScene"); // Passer à la mission 2
+                DeleteItemsFromDatabase("MissionItem");
+                return;
             }
+            else if (countMission2 >= 4)
+            {
+                SceneManager.LoadScene("SecondCutScene"); // Passer à la cut scene 2
+                DeleteItemsFromDatabase("SecondMission");
+                return;
+            }
+
+            Destroy(gameObject); // Détruire l’objet après collecte
         }
     }
+
+
 
     private void AddItemToDatabase()
     {
@@ -70,14 +79,13 @@ public class InteractableObject : MonoBehaviour
         {
             dbConnection.Open();
 
-            // Requête pour insérer l'objet dans la table 'items'
-            string insertQuery = "INSERT INTO items (username, item_name) VALUES (@username, @itemName)";
+            // Insérer l'objet avec son tag
+            string insertQuery = "INSERT INTO items (username, item_name, tag) VALUES (@username, @itemName, @tag)";
 
             using (IDbCommand command = dbConnection.CreateCommand())
             {
                 command.CommandText = insertQuery;
 
-                
                 var usernameParam = command.CreateParameter();
                 usernameParam.ParameterName = "@username";
                 usernameParam.Value = username;
@@ -88,7 +96,11 @@ public class InteractableObject : MonoBehaviour
                 itemNameParam.Value = ItemName;
                 command.Parameters.Add(itemNameParam);
 
-                
+                var tagParam = command.CreateParameter();
+                tagParam.ParameterName = "@tag";
+                tagParam.Value = tag; // Ajout du tag (MissionItem, SecondMission)
+                command.Parameters.Add(tagParam);
+
                 command.ExecuteNonQuery();
             }
 
@@ -96,7 +108,8 @@ public class InteractableObject : MonoBehaviour
         }
     }
 
-    private int CheckItemCount()
+
+    private int CheckItemCount(string tagType)
     {
         int itemCount = 0;
         string username = PlayerPrefs.GetString("LoggedInUser");
@@ -111,8 +124,8 @@ public class InteractableObject : MonoBehaviour
         {
             dbConnection.Open();
 
-           
-            string countQuery = "SELECT COUNT(*) FROM items WHERE username = @username";
+            // Compter les objets avec le tag correspondant
+            string countQuery = "SELECT COUNT(*) FROM items WHERE username = @username AND tag = @tagType";
 
             using (IDbCommand command = dbConnection.CreateCommand())
             {
@@ -123,7 +136,11 @@ public class InteractableObject : MonoBehaviour
                 usernameParam.Value = username;
                 command.Parameters.Add(usernameParam);
 
-                
+                var tagParam = command.CreateParameter();
+                tagParam.ParameterName = "@tagType";
+                tagParam.Value = tagType;
+                command.Parameters.Add(tagParam);
+
                 itemCount = int.Parse(command.ExecuteScalar().ToString());
             }
 
@@ -134,7 +151,8 @@ public class InteractableObject : MonoBehaviour
     }
 
 
-    private void DeleteItemsFromDatabase()
+
+    private void DeleteItemsFromDatabase(string tagType)
     {
         string username = PlayerPrefs.GetString("LoggedInUser");
 
@@ -148,8 +166,8 @@ public class InteractableObject : MonoBehaviour
         {
             dbConnection.Open();
 
-            // Requête pour supprimer les items du joueur
-            string deleteQuery = "DELETE FROM items WHERE username = @username";
+            // Supprimer seulement les objets du type donné
+            string deleteQuery = "DELETE FROM items WHERE username = @username AND tag = @tagType";
 
             using (IDbCommand command = dbConnection.CreateCommand())
             {
@@ -160,12 +178,15 @@ public class InteractableObject : MonoBehaviour
                 usernameParam.Value = username;
                 command.Parameters.Add(usernameParam);
 
-                // Exécution de la commande pour supprimer les items
+                var tagParam = command.CreateParameter();
+                tagParam.ParameterName = "@tagType";
+                tagParam.Value = tagType;
+                command.Parameters.Add(tagParam);
+
                 command.ExecuteNonQuery();
             }
 
             dbConnection.Close();
         }
     }
-
 }

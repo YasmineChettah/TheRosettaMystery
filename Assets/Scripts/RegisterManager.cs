@@ -73,9 +73,11 @@ public class RegisterManager : MonoBehaviour
                                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                                     username TEXT NOT NULL,
                                     item_name TEXT NOT NULL,
+                                    tag TEXT NOT NULL,
                                     date_collected DATETIME DEFAULT CURRENT_TIMESTAMP,
                                     FOREIGN KEY (username) REFERENCES users (username)
                                 );";
+
 
             using (var command = new SqliteCommand(createItemsTableQuery, connection))
             {
