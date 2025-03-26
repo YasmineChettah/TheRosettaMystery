@@ -16,4 +16,10 @@ https://assetstore.unity.com/packages/2d/textures-materials/nature/realistic-ter
 
 utilisation des websocket : 
 
+Méthode Expliquée sur le Git UnityTp envoyé également avec ce projet
 
+Utilisation de la bdd : 
+
+Méthode expliquée sur le git UnityTp 
+
+Une vidéo accompagnant le projet va être également présentée lors de la présentation finale. 
