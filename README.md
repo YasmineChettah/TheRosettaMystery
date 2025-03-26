@@ -16,7 +16,7 @@ https://assetstore.unity.com/packages/2d/textures-materials/nature/realistic-ter
 
 utilisation des websocket : 
 
-Méthode Expliquée sur le Git UnityTp envoyé également avec ce projet
+Méthode Expliquée sur le Git UnityTp envoyé également avec ce projet : port 8080
 
 Utilisation de la bdd : 
 
